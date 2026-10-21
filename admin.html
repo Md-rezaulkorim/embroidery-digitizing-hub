@@ -524,7 +524,7 @@
       const { error: uploadError } =
         await supabaseClient
           .storage
-          .from("Portfolio-images")
+          .from("portfolio-images")
           .upload(fileName, imageFile);
 
       if (uploadError) {
@@ -535,7 +535,7 @@
       const { data: publicUrlData } =
         supabaseClient
           .storage
-          .from("Portfolio-images")
+          .from("portfolio-images")
           .getPublicUrl(fileName);
 
       const imageUrl = publicUrlData.publicUrl;
