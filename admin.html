@@ -545,7 +545,7 @@
       // Save project to portfolio table
       const { error: databaseError } =
         await supabaseClient
-          .from("portfolio")
+          .from("Portfolio")
           .insert([
             {
               title: title,
