@@ -488,18 +488,105 @@
       ==========================================
     */
 
-    document.getElementById(
-      "portfolioForm"
-    ).addEventListener(
+        document.getElementById("portfolioForm").addEventListener(
       "submit",
-      function(event) {
-
+      async function(event) {
+    
         event.preventDefault();
-
-        alert(
-          "Image upload will be connected in the next step."
-        );
-
+    
+        const title = document.getElementById("title").value.trim();
+        const category = document.getElementById("category").value;
+        const description = document.getElementById("description").value.trim();
+        const imageFile = document.getElementById("image").files[0];
+        const status = document.getElementById("status");
+        const publishButton = document.querySelector(".publish-btn");
+    
+        if (!title || !category || !description || !imageFile) {
+          status.style.display = "block";
+          status.textContent = "Please fill in all fields.";
+          return;
+        }
+    
+        try {
+    
+          publishButton.disabled = true;
+          publishButton.textContent = "Publishing...";
+    
+          status.style.display = "block";
+          status.textContent = "Uploading image...";
+    
+          // Create unique file name
+          const fileName =
+            Date.now() + "-" +
+            imageFile.name.replace(/\s+/g, "-");
+    
+          // Upload image to Supabase Storage
+          const { error: uploadError } =
+            await supabaseClient
+              .storage
+              .from("portfolio-images")
+              .upload(fileName, imageFile);
+    
+          if (uploadError) {
+            throw uploadError;
+          }
+    
+          // Get public image URL
+          const { data: publicUrlData } =
+            supabaseClient
+              .storage
+              .from("portfolio-images")
+              .getPublicUrl(fileName);
+    
+          const imageUrl = publicUrlData.publicUrl;
+    
+          status.textContent = "Saving project...";
+    
+          // Save project to portfolio table
+          const { error: databaseError } =
+            await supabaseClient
+              .from("portfolio")
+              .insert([
+                {
+                  title: title,
+                  category: category,
+                  description: description,
+                  image_url: imageUrl
+                }
+              ]);
+    
+          if (databaseError) {
+            throw databaseError;
+          }
+    
+          // Success
+          status.textContent =
+            "Project published successfully!";
+    
+          status.style.background = "#e8f7e8";
+          status.style.color = "#176b17";
+    
+          // Reset form
+          document.getElementById("portfolioForm").reset();
+    
+        } catch (error) {
+    
+          console.error(error);
+    
+          status.style.display = "block";
+          status.style.background = "#ffe8e8";
+          status.style.color = "#b00000";
+    
+          status.textContent =
+            "Publish failed: " + error.message;
+    
+        } finally {
+    
+          publishButton.disabled = false;
+          publishButton.textContent = "Publish Portfolio";
+    
+        }
+    
       }
     );
 
