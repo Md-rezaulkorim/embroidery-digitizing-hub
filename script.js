@@ -72,7 +72,7 @@ async function loadPortfolio() {
     try {
 
         const { data, error } = await supabaseClient
-            .from("portfolio")
+            .from("Portfolio")
             .select("*")
             .order("id", { ascending: false });
 
