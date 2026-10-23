@@ -532,8 +532,12 @@
       }
 
       // Get public image URL
-      const imageUrl =
-          `${SUPABASE_URL}/storage/v1/object/public/portfolio-images/${encodeURIComponent(fileName)}`;
+      const { data: publicUrlData } = supabaseClient
+          .storage
+          .from("portfolio-images")
+          .getPublicUrl(fileName);
+      
+      const imageUrl = publicUrlData.publicUrl;
 
       status.textContent = "Saving project...";
 
