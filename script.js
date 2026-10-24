@@ -120,7 +120,8 @@ async function loadPortfolio() {
                 "data-category",
                 filterCategory
             );
-
+            
+            console.log("IMAGE URL FROM DATABASE:", project.image_url);
             article.innerHTML = `
 
                 <div class="portfolio-image">
