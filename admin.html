@@ -538,7 +538,10 @@
           .getPublicUrl(fileName);
       
       const imageUrl = publicUrlData.publicUrl;
-
+      
+      console.log("STORAGE PUBLIC URL:", imageUrl);
+      console.log("FILE NAME:", fileName);
+      
       status.textContent = "Saving project...";
 
       // Save project to portfolio table
